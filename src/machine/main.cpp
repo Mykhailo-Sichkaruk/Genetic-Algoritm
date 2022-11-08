@@ -14,7 +14,7 @@ class Machine
 {
 private:
     int id;
-    bool memory[REG_LENGTH][MEM_LENGTH];
+    bool memory[MEM_LENGTH][REG_LENGTH];
     enum Direction
     {
         LEFT = 'L',
@@ -28,15 +28,22 @@ private:
     /**
      *  Get the boolean array of a command and return the integer value of address
      */
-    int
-    getAdress(command cmd)
+    int getAdress(command cmd)
     {
         int adress = 0;
-        for (int i = 2; i < REG_LENGTH; i++)
+        // Return the integer value of the address
+        for (int i = REG_LENGTH; i >= 2; i--)
         {
-            adress += cmd[i] * pow(2, i);
+            adress += cmd[i] * pow(2, i - 2);
         }
+
         return adress;
+    }
+
+    bool *goToAddress(command cmd)
+    {
+        int address = getAdress(cmd);
+        return memory[address];
     }
 
     /**
@@ -49,14 +56,14 @@ private:
         address = address + 8;
         for (int i = REG_LENGTH - 1; i >= 0; i--)
         {
-            if (address[i] == 0)
+            if (!address[i])
             {
-                address[i] = 1;
+                address[i] = bool(1);
                 break;
             }
             else
             {
-                address[i] = 0;
+                address[i] = bool(0);
             }
         }
     }
@@ -65,31 +72,34 @@ private:
      */
     void binaryDecrement(bool *address)
     {
-        address = address + 8;
+        cout << "Decrementing: " << address[0] << endl;
         for (int i = REG_LENGTH - 1; i >= 0; i--)
         {
-            if (address[i] == 1)
+            if (address[i])
             {
-                address[i] = 0;
+                address[i] = bool(0);
                 break;
             }
             else
             {
-                address[i] = 1;
+                address[i] = bool(1);
             }
         }
     }
 
 public:
-    Machine(bool memory[MEM_LENGTH][REG_LENGTH])
+    Machine()
     {
         for (int i = 0; i < MEM_LENGTH; i++)
         {
             for (int j = 0; j < REG_LENGTH; j++)
             {
-                this->memory[i][j] = memory[i][j];
+                this->memory[i][j] = bool(rand() % 2);
+                cout << this->memory[i][j];
             }
         }
+
+        cout << "Machine created" << endl;
     }
 
     void runCommand(command command)
@@ -114,18 +124,12 @@ public:
 
     void increment(mem memory)
     {
-        int addressOfMemory = this->getAdress(memory);
-        bool targetReg[REG_LENGTH] = this->memory[addressOfMemory];
-        bool *result = this->binaryIncrement(targetReg);
-        this->memory[addressOfMemory] = *result;
+        this->binaryIncrement(this->goToAddress(memory));
     }
 
     void decrement(mem memory)
     {
-        copy(memory, memory + REG_LENGTH, this->memory[this->getAdress(memory)]);
-        bool targetReg[REG_LENGTH] = this->memory[this->getAdress(memory)];
-        bool *result = this->binaryDecrement(targetReg);
-        this->memory[this->getAdress(memory)] = result;
+        this->binaryDecrement(this->goToAddress(memory));
     }
 
     void print(mem memory)
@@ -146,41 +150,33 @@ public:
 
     void jump(mem memory)
     {
+        this->currentInstruction = getAdress(memory);
     }
 
     void run()
     {
+        this->currentInstruction = 0;
         for (int i = 0; i < MAX_STEPS; i++)
         {
-            this->runCommand(this->memory[i]);
+            this->runCommand(this->memory[this->currentInstruction]);
+            cout << this->currentInstruction << endl;
         }
-        cout << this->moves;
+        // Print all moves
+        cout << "Moves: " << endl;
+        for (int i = 0; i < MAX_STEPS; i++)
+        {
+            cout << moves[i];
+        }
     }
 };
 
-bool randomMemory()
-{
-    bool memory[MEM_LENGTH][REG_LENGTH];
-
-    for (int i = 0; i < MEM_LENGTH; i++)
-    {
-        for (int j = 0; j < REG_LENGTH; j++)
-        {
-            memory[i][j] = rand() % 2;
-        }
-    }
-
-    return memory;
-}
-
 int main()
 {
-    Machine machine;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
-        machine = new Machine(randomMemory());
+        cout << "Run " << i << endl;
+        Machine machine;
         machine.run();
-        machine = NULL;
     }
 }
 
