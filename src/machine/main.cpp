@@ -1,6 +1,8 @@
 #include <iostream>
+#include <time.h>
 #include <string>
 #include <Math.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -32,9 +34,9 @@ private:
     {
         int adress = 0;
         // Return the integer value of the address
-        for (int i = REG_LENGTH; i >= 2; i--)
+        for (int i = REG_LENGTH - 1; i >= 2; i--)
         {
-            adress += cmd[i] * pow(2, i - 2);
+            adress += cmd[i] * pow(2, REG_LENGTH - i - 1);
         }
 
         return adress;
@@ -46,11 +48,6 @@ private:
         return memory[address];
     }
 
-    /**
-     * @brief Return array of bits after incrementing the address
-     * Incrementing is cyclic
-     * @param data
-     */
     void binaryIncrement(bool *address)
     {
         address = address + 8;
@@ -68,11 +65,8 @@ private:
         }
     }
 
-    /**
-     */
     void binaryDecrement(bool *address)
     {
-        cout << "Decrementing: " << address[0] << endl;
         for (int i = REG_LENGTH - 1; i >= 0; i--)
         {
             if (address[i])
@@ -88,18 +82,18 @@ private:
     }
 
 public:
-    Machine()
+    Machine() {}
+
+    Machine(int id)
     {
+        srand(id + time(NULL));
         for (int i = 0; i < MEM_LENGTH; i++)
         {
             for (int j = 0; j < REG_LENGTH; j++)
             {
                 this->memory[i][j] = bool(rand() % 2);
-                cout << this->memory[i][j];
             }
         }
-
-        cout << "Machine created" << endl;
     }
 
     void runCommand(command command)
@@ -119,6 +113,15 @@ public:
         else if (command[0] == 1 && command[1] == 1)
         {
             print(command);
+        }
+
+        if (this->currentInstruction >= MEM_LENGTH - 1)
+        {
+            this->currentInstruction = 0;
+        }
+        else
+        {
+            this->currentInstruction++;
         }
     }
 
@@ -144,6 +147,7 @@ public:
         else if (memory[REG_LENGTH - 2] == 1 && memory[REG_LENGTH - 1] == 1)
             move = DOWN;
 
+        cout << move;
         moves[currentMove] = move;
         currentMove++;
     }
@@ -153,30 +157,36 @@ public:
         this->currentInstruction = getAdress(memory);
     }
 
+    void getCurrentInstruction()
+    {
+        for (int i = 0; i < REG_LENGTH; i++)
+        {
+            cout << memory[this->currentInstruction][i];
+        }
+        cout << endl;
+    }
+
     void run()
     {
         this->currentInstruction = 0;
         for (int i = 0; i < MAX_STEPS; i++)
         {
+            // this->getCurrentInstruction();
             this->runCommand(this->memory[this->currentInstruction]);
-            cout << this->currentInstruction << endl;
         }
-        // Print all moves
-        cout << "Moves: " << endl;
-        for (int i = 0; i < MAX_STEPS; i++)
-        {
-            cout << moves[i];
-        }
+        cout << endl;
     }
 };
 
 int main()
 {
-    for (int i = 0; i < 10; i++)
+    const int NUM_MACHINES = 1000;
+    Machine machines[NUM_MACHINES];
+    for (int i = 0; i < NUM_MACHINES; i++)
     {
+        machines[i] = Machine(i);
         cout << "Run " << i << endl;
-        Machine machine;
-        machine.run();
+        machines[i].run();
     }
 }
 
