@@ -1,6 +1,6 @@
 #include <iostream>
 #include <time.h>
-#include <string>
+#include <string.h>
 #include <Math.h>
 #include <stdlib.h>
 
@@ -15,8 +15,6 @@ typedef bool mem[REG_LENGTH - 2];
 class Machine
 {
 private:
-    int id;
-    bool memory[MEM_LENGTH][REG_LENGTH];
     enum Direction
     {
         LEFT = 'L',
@@ -24,21 +22,20 @@ private:
         UP = 'U',
         DOWN = 'D',
     };
-    char moves[MAX_STEPS];
+    int id;
+    bool memory[MEM_LENGTH][REG_LENGTH];
+    char moves[MAX_STEPS] = "";
+
     int currentMove = 0;
     int currentInstruction = 0;
-    /**
-     *  Get the boolean array of a command and return the integer value of address
-     */
+
     int getAdress(command cmd)
     {
         int adress = 0;
-        // Return the integer value of the address
         for (int i = REG_LENGTH - 1; i >= 2; i--)
         {
             adress += cmd[i] * pow(2, REG_LENGTH - i - 1);
         }
-
         return adress;
     }
 
@@ -83,6 +80,18 @@ private:
 
 public:
     Machine() {}
+
+    Machine(bool *memoryArray, int id)
+    {
+        this->id = id;
+        for (int i = 0; i < MEM_LENGTH; i++)
+        {
+            for (int j = 0; j < REG_LENGTH; j++)
+            {
+                memory[i][j] = memoryArray[i * REG_LENGTH + j];
+            }
+        }
+    }
 
     Machine(int id)
     {
@@ -166,27 +175,40 @@ public:
         cout << endl;
     }
 
-    void run()
+    string run()
     {
         this->currentInstruction = 0;
         for (int i = 0; i < MAX_STEPS; i++)
         {
-            // this->getCurrentInstruction();
             this->runCommand(this->memory[this->currentInstruction]);
         }
-        cout << endl;
+
+        return moves;
     }
 };
 
-int main()
+bool *generateMemory(int size, int randomSeed)
+{
+    bool *memory = new bool[size];
+    srand(randomSeed + time(NULL));
+
+    for (int i = 0; i < size; i++)
+    {
+        memory[i] = bool(rand() % 2);
+    }
+
+    return memory;
+}
+
+int main(int argc, const char **argv)
 {
     const int NUM_MACHINES = 1000;
     Machine machines[NUM_MACHINES];
     for (int i = 0; i < NUM_MACHINES; i++)
     {
-        machines[i] = Machine(i);
+        machines[i] = Machine(generateMemory(MEM_LENGTH * REG_LENGTH, i), i);
         cout << "Run " << i << endl;
-        machines[i].run();
+        cout << machines[i].run() << endl;
     }
 }
 
