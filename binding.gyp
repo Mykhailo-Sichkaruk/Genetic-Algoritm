@@ -3,7 +3,7 @@
         {
             "target_name": "machine",
             "sources": [
-                ".\\src\\machine\\main.cpp"
+                ".\\src\\machine\\addon.cpp"
             ]
         }
     ]
