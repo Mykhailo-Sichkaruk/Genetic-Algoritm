@@ -3,6 +3,8 @@
 #include <string.h>
 #include <Math.h>
 #include <stdlib.h>
+#include <node_api.h>
+#include <node.h>
 
 using namespace std;
 
@@ -28,7 +30,7 @@ private:
 
     int currentMove = 0;
     int currentInstruction = 0;
-
+    string strMemory;
     int getAdress(command cmd)
     {
         int adress = 0;
@@ -81,29 +83,41 @@ private:
 public:
     Machine() {}
 
-    Machine(bool *memoryArray, int id)
+    // Machine(bool *memoryArray, int id)
+    // {
+    //     this->id = id;
+    //     for (int i = 0; i < MEM_LENGTH; i++)
+    //     {
+    //         for (int j = 0; j < REG_LENGTH; j++)
+    //         {
+    //             memory[i][j] = memoryArray[i * REG_LENGTH + j];
+    //         }
+    //     }
+    // }
+
+    Machine(string memoryArray)
     {
-        this->id = id;
+        this->strMemory = memoryArray;
         for (int i = 0; i < MEM_LENGTH; i++)
         {
             for (int j = 0; j < REG_LENGTH; j++)
             {
-                memory[i][j] = memoryArray[i * REG_LENGTH + j];
+                memory[i][j] = memoryArray[i * REG_LENGTH + j] == '1';
             }
         }
     }
 
-    Machine(int id)
-    {
-        srand(id + time(NULL));
-        for (int i = 0; i < MEM_LENGTH; i++)
-        {
-            for (int j = 0; j < REG_LENGTH; j++)
-            {
-                this->memory[i][j] = bool(rand() % 2);
-            }
-        }
-    }
+    // Machine(int id)
+    // {
+    //     srand(id + time(NULL));
+    //     for (int i = 0; i < MEM_LENGTH; i++)
+    //     {
+    //         for (int j = 0; j < REG_LENGTH; j++)
+    //         {
+    //             this->memory[i][j] = bool(rand() % 2);
+    //         }
+    //     }
+    // }
 
     void runCommand(command command)
     {
@@ -156,7 +170,6 @@ public:
         else if (memory[REG_LENGTH - 2] == 1 && memory[REG_LENGTH - 1] == 1)
             move = DOWN;
 
-        cout << move;
         moves[currentMove] = move;
         currentMove++;
     }
@@ -183,7 +196,7 @@ public:
             this->runCommand(this->memory[this->currentInstruction]);
         }
 
-        return moves;
+        return this->moves;
     }
 };
 
@@ -200,16 +213,54 @@ bool *generateMemory(int size, int randomSeed)
     return memory;
 }
 
-int main(int argc, const char **argv)
-{
-    const int NUM_MACHINES = 1000;
-    Machine machines[NUM_MACHINES];
-    for (int i = 0; i < NUM_MACHINES; i++)
-    {
-        machines[i] = Machine(generateMemory(MEM_LENGTH * REG_LENGTH, i), i);
-        cout << "Run " << i << endl;
-        cout << machines[i].run() << endl;
-    }
-}
+// int main(int argc, const char **argv)
+// {
+//     const int NUM_MACHINES = 1000;
+//     Machine machines[NUM_MACHINES];
+//     for (int i = 0; i < NUM_MACHINES; i++)
+//     {
+//         machines[i] = Machine(generateMemory(MEM_LENGTH * REG_LENGTH, i), i);
+//         cout << "Run " << i << endl;
+//         cout << machines[i].run() << endl;
+//     }
+// }
 
-// Path: src\machine\main.cpp
+namespace demo
+{
+
+    using v8::FunctionCallbackInfo;
+    using v8::Isolate;
+    using v8::Local;
+    using v8::Number;
+    using v8::Object;
+    using v8::String;
+    using v8::Value;
+
+    void runMachine(const FunctionCallbackInfo<Value> &args)
+    {
+        Isolate *isolate = args.GetIsolate();
+        v8::String::Utf8Value input(isolate, args[0]);
+        std::string memory(*input);
+        Machine machine = Machine(memory.c_str());
+        string result = machine.run();
+        args.GetReturnValue().Set(String::NewFromUtf8(
+                                      isolate, result.c_str())
+                                      .ToLocalChecked());
+    }
+
+    void Method(const FunctionCallbackInfo<Value> &args)
+    {
+        Isolate *isolate = args.GetIsolate();
+        args.GetReturnValue().Set(String::NewFromUtf8(
+                                      isolate, "world")
+                                      .ToLocalChecked());
+    }
+
+    void Initialize(Local<Object> exports)
+    {
+        NODE_SET_METHOD(exports, "run", runMachine);
+    }
+
+    NODE_MODULE(NODE_GYP_MODULE_NAME, Initialize)
+
+}
