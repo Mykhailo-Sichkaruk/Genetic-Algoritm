@@ -3,8 +3,14 @@
         {
             "target_name": "machine",
             "sources": [
-                ".\\src\\machine\\addon.cpp"
+                "src/addons/machineAddon.cpp",
             ]
+        },
+        {
+            "target_name": "game",
+            "sources": [
+                "src/addons/gameAddon.cpp"
+            ],
         }
     ]
 }

@@ -1,5 +1,5 @@
 #include <node.h>
-#include "adapter.cpp"
+#include "./machine/machineAdapter.cpp"
 
 using namespace v8;
 using namespace std;
