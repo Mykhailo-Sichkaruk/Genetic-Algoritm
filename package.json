@@ -2,10 +2,17 @@
   "name": "store_search",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
+    "start": "node src/geneticAlgorithm.js",
+    "index": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mykhailo Sichkaruk",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "eslint": "^8.27.0",
+    "tcs": "^10.0.2"
+  }
 }

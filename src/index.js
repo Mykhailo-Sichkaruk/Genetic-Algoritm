@@ -1,28 +1,28 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const Machine = require("../build/Release/machine");
 const Game = require("../build/Release/game");
 
-const INSTRUCTION_LEN = 8;
 const MEMORY_SIZE = 64;
 
-const generateArrayBufferMemory = (size) => {
-    const memory = new ArrayBuffer(size);
-    const memoryView = new Uint8Array(memory);
-    for (let i = 0; i < size; i++) {
-        memoryView[ i ] = Math.floor(Math.random() * 255); 
-    }
+const generateArrayBufferMemory = size => {
+	const memory = new ArrayBuffer(size);
+	const memoryView = new Uint8Array(memory);
+	for (let i = 0; i < size; i++) {
+		memoryView[ i ] = Math.floor(Math.random() * 255);
+	}
 
-    return memory;
+	return memory;
 };
 
+const generateMemory = size => {
+	let memory = "";
+	for (let i = 0; i < size; i++) {
+		memory += "1";
+	}
 
-const generateMemory = (size) => {
-    let memory = "";
-    for (let i = 0; i < size; i++) {
-        memory += "1"
-    }
-
-    return memory;
-}
+	return memory;
+};
 
 const memory = generateArrayBufferMemory(MEMORY_SIZE);
 console.log("Memory: ", memory);
