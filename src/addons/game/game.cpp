@@ -14,7 +14,7 @@ private:
         STORE = 2,
     };
 
-    int pitch[pitch_max_X][pitch_max_Y];
+    int pitch[pitch_max_X][pitch_max_Y] = {0};
     int grabbedStores = 0;
     int playerX = 0;
     int playerY = 0;
@@ -27,7 +27,7 @@ private:
         }
     }
 
-    void playerMoveLeft()
+    bool playerMoveLeft()
     {
         if (this->playerX > 0)
         {
@@ -37,12 +37,15 @@ private:
                 this->pitch[this->playerX][this->playerY] = EMPTY;
                 this->grabbedStores++;
             }
+            return true;
         }
+
+        return false;
     }
 
-    void playerMoveRight()
+    bool playerMoveRight()
     {
-        if (this->playerX < pitch_max_X)
+        if (this->playerX < pitch_max_X - 1)
         {
             this->playerX++;
             if (this->pitch[this->playerX][this->playerY] == STORE)
@@ -50,10 +53,13 @@ private:
                 this->pitch[this->playerX][this->playerY] = EMPTY;
                 this->grabbedStores++;
             }
+            return true;
         }
+
+        return false;
     }
 
-    void playerMoveUp()
+    bool playerMoveUp()
     {
         if (this->playerY > 0)
         {
@@ -63,12 +69,15 @@ private:
                 this->pitch[this->playerX][this->playerY] = EMPTY;
                 this->grabbedStores++;
             }
+            return true;
         }
+
+        return false;
     }
 
-    void playerMoveDown()
+    bool playerMoveDown()
     {
-        if (this->playerY < pitch_max_Y)
+        if (this->playerY < pitch_max_Y - 1)
         {
             this->playerY++;
             if (this->pitch[this->playerX][this->playerY] == STORE)
@@ -76,7 +85,10 @@ private:
                 this->pitch[this->playerX][this->playerY] = EMPTY;
                 this->grabbedStores++;
             }
+            return true;
         }
+
+        return false;
     }
 
 public:
@@ -99,7 +111,7 @@ public:
 
         this->pitch[3][6] = PLAYER;
         positionXY stores[5] = {{4, 1}, {2, 2}, {6, 3}, {1, 4}, {4, 5}};
-
+        this->grabbedStores = 0;
         this->setStores(stores, 5);
     }
 
@@ -110,21 +122,28 @@ public:
             switch (moves[i])
             {
             case 'L':
-            case 'l':
-                this->playerMoveLeft();
+                if (!this->playerMoveLeft())
+                {
+                    return this->grabbedStores;
+                }
                 break;
             case 'R':
-            case 'r':
-                this->playerMoveRight();
+                if (!this->playerMoveRight())
+                {
+                    return this->grabbedStores;
+                }
                 break;
             case 'U':
-            case 'u':
-                this->playerMoveUp();
+                if (!this->playerMoveUp())
+                {
+                    return this->grabbedStores;
+                }
                 break;
             case 'D':
-            case 'd':
-                this->playerMoveDown();
-                break;
+                if (!this->playerMoveDown())
+                {
+                    return this->grabbedStores;
+                }
             }
         }
 
