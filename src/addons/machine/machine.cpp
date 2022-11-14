@@ -102,7 +102,7 @@ protected:
             print(instrunction);
         }
 
-        if (this->programCounter >= MEM_LENGTH - 1)
+        if (this->programCounter >= this->MEMORY_SIZE - 1)
         {
             this->programCounter = 0;
         }
