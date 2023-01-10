@@ -83,8 +83,10 @@ protected:
         }
     }
 
-    void runInstruction(instrunction instrunction)
+    // Run instruction and return move if there is one or ' ' if there is not
+    char runInstruction(instrunction instrunction)
     {
+        char move = ' ';
         if (instrunction[0] == 0 && instrunction[1] == 0)
         {
             increment(instrunction);
@@ -99,7 +101,7 @@ protected:
         }
         else if (instrunction[0] == 1 && instrunction[1] == 1)
         {
-            print(instrunction);
+            move = print(instrunction);
         }
 
         if (this->programCounter >= this->MEMORY_SIZE - 1)
@@ -110,6 +112,8 @@ protected:
         {
             this->programCounter++;
         }
+
+        return move;
     }
 
     void increment(memoryPointer memory)
@@ -122,7 +126,7 @@ protected:
         this->binaryDecrement(this->goToAddress(memory));
     }
 
-    void print(memoryPointer memory)
+    char print(memoryPointer memory)
     {
         char move;
         if (memory[INSTRUCTION_LENGTH - 2] == 0 && memory[INSTRUCTION_LENGTH - 1] == 0)
@@ -134,8 +138,7 @@ protected:
         else if (memory[INSTRUCTION_LENGTH - 2] == 1 && memory[INSTRUCTION_LENGTH - 1] == 1)
             move = DOWN;
 
-        moves[currentMove] = move;
-        currentMove++;
+        return move;
     }
 
     void jump(memoryPointer memory)
@@ -170,9 +173,15 @@ public:
     string run()
     {
         this->programCounter = 0;
+        char move = ' ';
         for (int i = 0; i < MAX_STEPS; i++)
         {
-            this->runInstruction(this->memory[this->programCounter]);
+            move = this->runInstruction(this->memory[this->programCounter]);
+            if (move != ' ')
+            {
+                this->moves[this->currentMove] = move;
+                this->currentMove++;
+            }
         }
 
         return this->moves;
