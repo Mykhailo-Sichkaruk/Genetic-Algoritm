@@ -3,6 +3,7 @@
 #include <string.h>
 #include <Math.h>
 #include <stdlib.h>
+#include "const.h"
 
 using namespace std;
 
@@ -15,14 +16,7 @@ typedef bool memoryPointer[INSTRUCTION_LENGTH - 2];
 class Machine8bit
 {
 protected:
-    enum Direction
-    {
-        LEFT = 'L',
-        RIGHT = 'R',
-        UP = 'U',
-        DOWN = 'D',
-    };
-    // Number of instructions of the machinek
+    // Number of instructions of the machine
     int MEMORY_SIZE = MEM_LENGTH;
     // Memory of the machine = MEMORY_SIZE * 8 bit instructions
     bool memory[MEM_LENGTH][INSTRUCTION_LENGTH];

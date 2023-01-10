@@ -1,3 +1,5 @@
+#include "const.h"
+
 using namespace std;
 
 typedef int positionXY[2];
@@ -92,18 +94,6 @@ private:
     }
 
 public:
-    // GrabStoresGame(int pitch_max_X, int pitch_max_Y, positionXY player, positionXY *stores, int storesCount)
-    // {
-    //     pitch_max_X = pitch_max_X;
-    //     pitch_max_Y = pitch_max_Y;
-    //     this->pitch = new int[pitch_max_X][pitch_max_Y];
-    //     this->playerX = player[0];
-    //     this->playerY = player[1];
-
-    //     this->pitch[player[0]][player[1]] = PLAYER;
-    //     this.setStores(stores, storesCount);
-    // }
-
     GrabStoresGame()
     {
         this->playerX = 3;
@@ -115,31 +105,32 @@ public:
         this->setStores(stores, 5);
     }
 
+    // Run game with current moves and return count of grabbed stores
     int run(string moves)
     {
         for (int i = 0; i < moves.length(); i++)
         {
             switch (moves[i])
             {
-            case 'L':
+            case LEFT:
                 if (!this->playerMoveLeft())
                 {
                     return this->grabbedStores;
                 }
                 break;
-            case 'R':
+            case RIGHT:
                 if (!this->playerMoveRight())
                 {
                     return this->grabbedStores;
                 }
                 break;
-            case 'U':
+            case UP:
                 if (!this->playerMoveUp())
                 {
                     return this->grabbedStores;
                 }
                 break;
-            case 'D':
+            case DOWN:
                 if (!this->playerMoveDown())
                 {
                     return this->grabbedStores;
