@@ -15,15 +15,6 @@ const generateArrayBufferMemory = size => {
 	return memory;
 };
 
-const generateMemory = size => {
-	let memory = "";
-	for (let i = 0; i < size; i++) {
-		memory += "1";
-	}
-
-	return memory;
-};
-
 const memory = generateArrayBufferMemory(MEMORY_SIZE);
 console.log("Memory: ", memory);
 console.log("Running machine...");
