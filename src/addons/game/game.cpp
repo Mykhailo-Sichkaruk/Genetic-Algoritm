@@ -1,4 +1,4 @@
-#include "const.h"
+#include "../const.h"
 
 using namespace std;
 

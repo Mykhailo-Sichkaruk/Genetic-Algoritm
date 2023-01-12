@@ -3,7 +3,7 @@
 #include <string.h>
 #include <Math.h>
 #include <stdlib.h>
-#include "const.h"
+#include "../const.h"
 
 using namespace std;
 
