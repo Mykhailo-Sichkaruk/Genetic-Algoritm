@@ -1,12 +1,11 @@
-#include "machine.cpp"
+#include "machineAdapter.h"
 
 // Adapter of 8bit Machine,
 // Allows create Machine8bit instances with uint8_t array of numbers
 // Convert uint8_t array to boolean representation
-class MachineAdapter : public Machine8bit
+namespace demo
 {
-private:
-    bool *Uint8ToBool(uint8_t number)
+    bool *MachineAdapter::Uint8ToBoolArray(uint8_t number)
     {
         bool *result = new bool[INSTRUCTION_LENGTH];
         for (int i = INSTRUCTION_LENGTH - 1; i >= 0; i--)
@@ -17,7 +16,7 @@ private:
         return result;
     }
 
-    void copyCommand(bool *source, bool *target)
+    void MachineAdapter::copyCommand(bool *source, bool *target)
     {
         for (int i = 0; i < INSTRUCTION_LENGTH; i++)
         {
@@ -25,14 +24,18 @@ private:
         }
     }
 
-public:
-    MachineAdapter(uint8_t *instructions, int memorySize)
+    MachineAdapter::MachineAdapter()
+    {
+        this->MEMORY_SIZE = MEM_LENGTH;
+    }
+
+    MachineAdapter::MachineAdapter(uint8_t *instructions, int memorySize)
     {
         this->MEMORY_SIZE = memorySize;
-        for (int i = 0; i < this->MEMORY_SIZE; i++)
+        for (int i = 0; i < MEMORY_SIZE; i++)
         {
-            bool *temp = Uint8ToBool(instructions[i]);
-            this->copyCommand(temp, memory[i]);
+            bool *temp = Uint8ToBoolArray(instructions[i]);
+            copyCommand(temp, memory[i]);
         }
     }
-};
+}
