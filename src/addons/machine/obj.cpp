@@ -58,11 +58,29 @@ namespace demo
         if (args.IsConstructCall())
         {
             // Invoked as constructor: `new MachineObj(...)`
+
+            /// Check if there is only one argument
+            if (args.Length() != 1)
+            {
+                isolate->ThrowException(v8::Exception::TypeError(
+                    String::NewFromUtf8(isolate, "Wrong number of arguments")
+                        .ToLocalChecked()));
+                return;
+            }
+            // Check if first argument is an array buffer
+            if (!args[0]->IsArrayBuffer())
+            {
+                // Check if first argument is an array buffer
+                isolate->ThrowException(v8::Exception::TypeError(
+                    String::NewFromUtf8(isolate, "First argument must be an ArrayBuffer")
+                        .ToLocalChecked()));
+                return;
+            }
             // Get the first argument - Typed Array of uint8
             Local<ArrayBuffer> contents = args[0].As<ArrayBuffer>();
             uint8_t *ptr = (uint8_t *)contents->GetBackingStore()->Data();
-            // Get the second argument - memory size of the machine (int)
-            int length = args[1].As<Number>()->Value();
+            // Get the length of the array
+            int length = args[0].As<ArrayBuffer>()->ByteLength();
             MachineObj *obj = new MachineObj(ptr, length);
             obj->Wrap(args.This());
             args.GetReturnValue().Set(args.This());
