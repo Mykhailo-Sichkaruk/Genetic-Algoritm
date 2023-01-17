@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/geneticAlgorithm.js",
     "index": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/machine.js"
   },
   "author": "Mykhailo Sichkaruk",
   "license": "MIT",
