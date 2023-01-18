@@ -17,6 +17,8 @@ namespace demo
     using v8::String;
     using v8::Value;
 
+    const int memorySize = 64;
+
     MachineObj::MachineObj(uint8_t *instructions, int memorySize)
     {
         this->machine = MachineAdapter::MachineAdapter(instructions, memorySize);
@@ -81,6 +83,17 @@ namespace demo
             uint8_t *ptr = (uint8_t *)contents->GetBackingStore()->Data();
             // Get the length of the array
             int length = args[0].As<ArrayBuffer>()->ByteLength();
+            // Check if the length is equal to the memory size
+            if (length != memorySize)
+            {
+                // Check if first argument is an array buffer
+                isolate->ThrowException(v8::Exception::TypeError(
+                    String::NewFromUtf8(isolate, ("Memory need to be 64B length, you`re trying to load " + std::to_string(length) + "B").c_str())
+                        .ToLocalChecked()));
+                return;
+            }
+
+            // Create a new instance of the object
             MachineObj *obj = new MachineObj(ptr, length);
             obj->Wrap(args.This());
             args.GetReturnValue().Set(args.This());
