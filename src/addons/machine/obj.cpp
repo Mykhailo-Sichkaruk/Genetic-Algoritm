@@ -115,8 +115,29 @@ namespace demo
     {
         Isolate *isolate = args.GetIsolate();
 
+        // Check if there is only one argument
+        if (args.Length() != 1)
+        {
+            isolate->ThrowException(v8::Exception::TypeError(
+                String::NewFromUtf8(isolate, "Wrong number of arguments")
+                    .ToLocalChecked()));
+            return;
+        }
+
+        // Check if first argument is an integer
+        if (!args[0]->IsNumber())
+        {
+            isolate->ThrowException(v8::Exception::TypeError(
+                String::NewFromUtf8(isolate, "First argument must be an integer")
+                    .ToLocalChecked()));
+            return;
+        }
+
+        // Get the first argument - integer of instructions to run
+        int instructionsToRun = args[0]->Int32Value(isolate->GetCurrentContext()).ToChecked();
+
         MachineObj *obj = ObjectWrap::Unwrap<MachineObj>(args.Holder());
-        string result = obj->machine.run();
+        string result = obj->machine.run(instructionsToRun);
 
         args.GetReturnValue()
             .Set(String::NewFromUtf8(
