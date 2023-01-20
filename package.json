@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
+  "types": "types/servises.d.ts",
   "main": "index.js",
   "scripts": {
     "start": "node src/geneticAlgorithm.js",
     "index": "node src/index.js",
-    "test": "node test/machine.js"
+    "test": "node test/machine.js",
+    "ts": "tsc ./src/index.js"
   },
   "author": "Mykhailo Sichkaruk",
   "license": "MIT",
@@ -15,5 +17,9 @@
     "eslint": "^8.27.0",
     "plotly": "^1.0.6",
     "tcs": "^10.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "typescript": "^4.9.4"
   }
 }
