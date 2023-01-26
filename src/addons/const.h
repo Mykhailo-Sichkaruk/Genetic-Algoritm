@@ -1,3 +1,6 @@
+#ifndef CONST_H
+#define CONST_H
+
 enum Direction
 {
     LEFT = 'L',
@@ -5,3 +8,5 @@ enum Direction
     UP = 'U',
     DOWN = 'D',
 };
+
+#endif
