@@ -6,21 +6,18 @@
 #include <node_object_wrap.h>
 #include "machineAdapter.h"
 
-namespace demo
+class MachineObj : public node::ObjectWrap
 {
-    class MachineObj : public node::ObjectWrap
-    {
-    public:
-        static void Init(v8::Local<v8::Object> exports);
+public:
+    static void Init(v8::Local<v8::Object> exports);
 
-    private:
-        explicit MachineObj(uint8_t *instructions, int memorySize);
-        ~MachineObj();
+private:
+    explicit MachineObj(uint8_t *instructions);
+    ~MachineObj();
 
-        static void New(const v8::FunctionCallbackInfo<v8::Value> &args);
-        static void Run(const v8::FunctionCallbackInfo<v8::Value> &args);
+    static void New(const v8::FunctionCallbackInfo<v8::Value> &args);
+    static void Run(const v8::FunctionCallbackInfo<v8::Value> &args);
 
-        MachineAdapter machine;
-    };
-}
+    MachineAdapter machine;
+};
 #endif
