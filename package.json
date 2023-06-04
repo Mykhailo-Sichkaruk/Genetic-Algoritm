@@ -14,7 +14,7 @@
   "author": "Mykhailo Sichkaruk",
   "license": "MIT",
   "dependencies": {
-    "eslint": "^8.27.0",
+    "eslint": "^8.40.0",
     "plotly": "^1.0.6",
     "tcs": "^10.0.2"
   },
